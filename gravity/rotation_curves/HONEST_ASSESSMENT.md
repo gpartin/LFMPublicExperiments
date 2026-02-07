@@ -1,43 +1,50 @@
-﻿# HONEST ASSESSMENT: LFM Galaxy Rotation Curves Experiment
-# =========================================================
+﻿# LFM Galaxy Rotation Curves - Complete Honest Assessment
 
-## WHAT WE SHOWED
+## Summary of Experiments
 
-1. **LFM predicts a = cH/(2π)  1.0810 m/s**
-   - This matches observed g = 1.210 m/s within 10%
-   - This is a genuine LFM prediction (cH/2π comes from chi cosmology)
+### GOV-04 (Quasi-static Poisson limit)
+**File**: lfm_gov04_proper.py
+**Result**: DECLINING curves (Keplerian falloff)
+**Why**: GOV-04 is structurally identical to Newtonian Poisson equation
 
-2. **Using a in RAR gives excellent fits:**
-   - 4/5 galaxies: flat curves
-   - 4/5 galaxies: <20% error
-   - Average: 11.5% RMS error
+### GOV-03 (Chi memory with tau-averaging)
+**File**: lfm_gov03_memory.py, lfm_gov03_scan.py
+**Result**: Can produce FLAT curves with parameter tuning
+**Problem**: 
+- Requires 2 free parameters (g, tau_scale)
+- Shape is wrong (rising, not flat throughout)
+- Not predictive without deriving tau from fundamentals
 
-## WHAT WE DID NOT SHOW (HONESTY REQUIRED)
+### RAR with LFM a
+**File**: lfm_sparc_rotation_rar.py
+**Result**: Excellent fits (4/5 flat, 11.5% avg error)
+**Problem**: RAR functional form is EMPIRICAL, not derived
 
-1. **RAR interpolating function is EMPIRICAL**
-   - Formula: g_obs = g_bar / (1 - exp(-sqrt(g_bar/g)))
-   - This is the OBSERVED relation from McGaugh et al. 2016
-   - We did NOT derive this functional form from GOV-01/02
+## What LFM Actually Provides
 
-2. **Chi dynamics  RAR derivation is MISSING**
-   - Claim: Chi gradient produces RAR-like behavior
-   - Status: NOT YET PROVEN in LFM
-   - This is future work
+| Quantity | Status | Source |
+|----------|--------|--------|
+| a = cH/(2π) |  DERIVED | LFM cosmology |
+| a value match |  10% | Compared to observed g |
+| RAR shape |  BORROWED | McGaugh et al. 2016 |
+| Flat curves from GOV-03 |  POSSIBLE | With tuning |
+| Predictive power |  MISSING | Need tau derivation |
 
-## HONEST CONCLUSION
+## The Gap That Needs Closing
 
-- **PARTIAL SUCCESS**: LFM correctly predicts a within 10%
-- **FUTURE WORK**: Derive RAR interpolating function from chi dynamics
-- **CURRENT STATUS**: Hybrid approach (LFM a + empirical RAR shape)
+**Required derivation**: Show that coupled GOV-01 + GOV-02 dynamics produce the RAR interpolating function:
 
-## LFM-ONLY AUDIT RESULT
+lfm_rar_derivation_attempt.py\nu(x) = \frac{1}{1 - e^{-\sqrt{x}}}lfm_rar_derivation_attempt.py
 
-`
-Used empirical RAR formula:        YES (not fully LFM-only)
-a = cH/(2π) from LFM:           YES (genuine LFM prediction)
-NFW/dark matter halos:             NO
-MOND injected:                     NO (but RAR is MOND-equivalent)
-`
+where  = g_{bar}/a_0$ and  = cH_0/(2\pi)$.
 
-The experiment is PARTIALLY LFM-only.
-The a prediction is valid; the RAR shape is borrowed.
+**Current status**: We can MATCH the scale (a) but not DERIVE the shape (ν(x)).
+
+## Conclusion
+
+LFM rotation curve predictions are currently a **partial success**:
+-  Correct acceleration scale from cosmology
+-  RAR shape not derived from first principles
+-  GOV-03 can produce flat curves but requires tuning
+
+This is an honest gap that should be addressed in future work.
