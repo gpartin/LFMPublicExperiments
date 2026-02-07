@@ -1,0 +1,33 @@
+{
+  "experiment": "LFM Neutron Star Merger",
+  "timestamp": "2026-02-07T12:51:50.812382",
+  "parameters": {
+    "chi_0": 19.0,
+    "kappa": 0.016,
+    "kappa_dense": 0.05,
+    "ns_amplitude": 50.0,
+    "initial_separation": 60.0,
+    "n_steps": 25000
+  },
+  "results": {
+    "merger_detected": true,
+    "merger_time": 1054.6000000000001,
+    "final_separation": 0.0,
+    "peak_amplitude": 25.40120901139584,
+    "chirp_detected": true,
+    "ringdown_cycles": 9,
+    "qgp_fraction": 0.59,
+    "features_matched": 4
+  },
+  "hypothesis": {
+    "H0_rejected": true,
+    "lfm_only_verified": true
+  },
+  "gw170817_comparison": {
+    "inspiral": true,
+    "chirp": true,
+    "merger_peak": false,
+    "ringdown": true,
+    "phase_transition": true
+  }
+}
