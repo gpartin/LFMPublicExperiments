@@ -16,6 +16,8 @@ This repository contains reproducible experiments demonstrating that fundamental
 ∂²χ/∂t² = c²∇²χ − κ(E² − E₀²)
 ```
 
+📖 **See [LFM_EQUATIONS.md](LFM_EQUATIONS.md) for complete equation reference, numerical implementation details, and experiment rules.**
+
 Where:
 - **E** = Wave amplitude/energy field
 - **χ** = Local "mass" parameter (creates curvature)
