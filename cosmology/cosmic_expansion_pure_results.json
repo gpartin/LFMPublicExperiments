@@ -1,0 +1,33 @@
+{
+  "experiment": "LFM Cosmic Expansion - Pure Substrate",
+  "date": "2026-02-07T13:12:57.116606",
+  "lfm_only_verified": true,
+  "parameters": {
+    "chi_0": 19.0,
+    "kappa": 0.016,
+    "grid_size": 500,
+    "n_steps": 20000
+  },
+  "measurements": {
+    "initial_wavelength": 50.100200400801604,
+    "final_wavelength": 501.00200400801606,
+    "expansion_factor": 10.0,
+    "chi_initial": 18.95199038090708,
+    "chi_final": 0.1,
+    "chi_ratio": 0.005276490647691739,
+    "H_initial": 0.016,
+    "H_final": 0.0
+  },
+  "hypothesis_status": {
+    "H0_rejected": true,
+    "expansion_observed": true,
+    "wavelength_increased": true,
+    "chi_evolved": true
+  },
+  "audit": {
+    "friedmann_used": false,
+    "textbook_cosmology_injected": false,
+    "all_physics_from_gov": true
+  },
+  "conclusion": "Wavelength stretching emerges from GOV-01/02 dynamics"
+}

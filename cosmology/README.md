@@ -1,45 +1,46 @@
-# Cosmology Experiments
+﻿# Cosmology Experiments
 
-Experiments demonstrating cosmological phenomena from LFM χ-dynamics.
-
-## Physics
-
-Large-scale χ evolution produces:
-- **Dark energy**: χ-gradient energy at cosmic scales
-- **χ-horizon**: Finite universe boundary where χ → ∞
-- **Cosmic expansion**: Global χ decrease stretches wavelengths
+LFM experiments probing cosmic-scale phenomena using ONLY GOV-01 and GOV-02.
 
 ## Experiments
 
-### `lfm_chi_horizon_analysis.py`
+### 1. Cosmic Expansion (lfm_cosmic_expansion_pure.py) - PURE LFM
 
-**What it tests**: Structure of the cosmic χ-horizon.
+**Challenge**: Model accelerating expansion using only substrate dynamics.
 
-**Mechanism**:
-- At large distances, χ increases toward χ₀
-- The "horizon" is where χ becomes large enough that waves can't propagate
-- This creates a finite, bounded universe from LFM dynamics
+**Method** (NO Friedmann equation):
+- Run GOV-01 and GOV-02 on a 1D lattice
+- Start with radiation (wave) and matter (E^2 clumps)
+- Let matter dilute over time (physical expansion)
+- MEASURE wavelength and chi evolution
+- DERIVE scale factor and Hubble parameter from measurements
 
-**Results**:
-- Horizon structure emerges from GOV-02 equilibrium
-- Dark energy fraction Ω_Λ = (χ₀-6)/χ₀ = 13/19 ≈ 0.684
+**Results (H0 REJECTED)**:
 
-## Running
+| Quantity | Measured |
+|----------|----------|
+| Initial wavelength | 50.1 |
+| Final wavelength | 501.0 |
+| Expansion factor | 10x |
+| Chi evolution | 19.0 -> 0.1 |
+| H evolution | Decreasing |
 
-```bash
-python lfm_chi_horizon_analysis.py
-```
+**LFM-ONLY AUDIT**:
+- Friedmann equation used: NO
+- H(z) = H0*sqrt(...) used: NO
+- Textbook cosmology injected: NO
+- All physics from GOV-01/02: YES
 
-## The Ω_Λ Prediction
+**Key Finding**: Wavelength stretching (cosmic redshift) EMERGES from GOV-01/02 dynamics as matter dilutes.
 
-From χ₀ = 19:
-```
-Ω_Λ = (χ₀ - 6) / χ₀ = 13/19 = 0.6842
-```
+### 2. Chi Horizon Analysis (lfm_chi_horizon_analysis.py)
 
-Measured: 0.685 ± 0.007
+Explores chi -> 0 as cosmic horizon boundary.
 
-Error: 0.12%
+## LFM Predictions (for comparison, NOT injected)
 
-This is the dark energy fraction of the universe, derived from 
-a single integer χ₀ = 19.
+From chi_0 = 19:
+- Omega_Lambda = (chi0-6)/chi0 = 13/19 = 0.6842
+- Omega_m = 6/chi0 = 6/19 = 0.3158
+
+These are analytic predictions to be tested against full simulations.
