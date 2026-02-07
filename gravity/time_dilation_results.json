@@ -1,0 +1,24 @@
+{
+  "experiment": "LFM Time Dilation",
+  "timestamp": "2026-02-07T12:17:02.226989",
+  "parameters": {
+    "chi_0": 2.0,
+    "chi_min": 1.2,
+    "well_depth": 0.8,
+    "wave_width": 5.0,
+    "n_steps": 3000
+  },
+  "results": {
+    "omega_flat_measured": 2.0106192982974678,
+    "omega_well_measured": 1.2147491593880535,
+    "freq_ratio_measured": 0.6041666666666667,
+    "freq_ratio_theory": 0.6461356698916906,
+    "time_dilation_factor": 1.6551724137931032
+  },
+  "hypothesis": {
+    "H0_rejected": true,
+    "lfm_only_verified": true,
+    "frequencies_different": true,
+    "well_slower": true
+  }
+}

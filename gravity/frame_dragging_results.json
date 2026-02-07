@@ -1,0 +1,30 @@
+{
+  "experiment": "LFM Frame Dragging",
+  "timestamp": "2026-02-07T12:17:06.412763",
+  "parameters": {
+    "chi_0": 2.0,
+    "kappa": 0.5,
+    "omega_source": 0.1,
+    "source_radius": 8.0,
+    "test_position": [
+      25.0,
+      0.0
+    ],
+    "n_steps": 2000
+  },
+  "results": {
+    "L_source_initial": 118.79061628687252,
+    "L_source_final": -47.45410234454824,
+    "L_test_initial": 0.05799831493411283,
+    "L_test_final": 100.32544185656512,
+    "delta_L_test": 100.26744354163101,
+    "L_transfer_rate": -0.2912285682514109,
+    "same_direction": true
+  },
+  "hypothesis": {
+    "H0_rejected": true,
+    "lfm_only_verified": true,
+    "significant_transfer": true,
+    "correct_direction": true
+  }
+}
