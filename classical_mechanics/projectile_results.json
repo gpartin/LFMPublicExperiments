@@ -1,0 +1,19 @@
+{
+  "experiment": "LFM Projectile Motion",
+  "timestamp": "2026-02-07T11:24:59.208895",
+  "parameters": {
+    "chi_background": 1.0,
+    "gravity_strength": 0.02
+  },
+  "results": {
+    "R2_horizontal_linear": 0.6447314864205016,
+    "R2_vertical_parabolic": 0.9781583604057631,
+    "R2_vertical_linear": 0.966006458288084,
+    "effective_acceleration": -0.0035950580802112148,
+    "curves_down": true
+  },
+  "hypothesis": {
+    "H0_rejected": true,
+    "lfm_only_verified": true
+  }
+}

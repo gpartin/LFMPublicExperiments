@@ -1,0 +1,39 @@
+{
+  "experiment": "LFM Particle in Box",
+  "timestamp": "2026-02-07T11:25:35.256200",
+  "parameters": {
+    "chi_box": 0.5,
+    "chi_wall": 5.0,
+    "box_size": 10.0
+  },
+  "results": {
+    "num_peaks": 4,
+    "discreteness": 0.8992586153127053,
+    "matched_modes": [
+      {
+        "n": 1,
+        "f": 0.09375,
+        "error": 0.24661665598598964
+      },
+      {
+        "n": 3,
+        "f": 0.171875,
+        "error": 1.2210885953894715
+      },
+      {
+        "n": 5,
+        "f": 0.25,
+        "error": 4.710948601131269
+      },
+      {
+        "n": 7,
+        "f": 0.34375,
+        "error": 4.229916745194192
+      }
+    ]
+  },
+  "hypothesis": {
+    "H0_rejected": true,
+    "lfm_only_verified": true
+  }
+}
