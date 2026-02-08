@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-02-08T13:28:11.285620",
+  "n_galaxies": 576493,
+  "cosmic_web": {
+    "void": {
+      "chi_mean": 19.41223113954242,
+      "chi_std": 0.38937980658722254,
+      "overdensity_mean": -0.7090701141330521,
+      "n_cells": 190710,
+      "fraction": 0.37248046875
+    },
+    "filament": {
+      "chi_mean": 18.50318187962567,
+      "chi_std": 0.5934321306352287,
+      "overdensity_mean": 0.6761092759246393,
+      "n_cells": 148767,
+      "fraction": 0.290560546875
+    },
+    "cluster": {
+      "chi_mean": 17.91257431161228,
+      "chi_std": 0.4499356618624205,
+      "overdensity_mean": 3.2135465049699667,
+      "n_cells": 23839,
+      "fraction": 0.046560546875
+    }
+  },
+  "observables": {
+    "chi_void": 19.41223113954242,
+    "chi_filament": 18.50318187962567,
+    "chi_cluster": 17.91257431161228,
+    "chi_ratio_fil_void": 0.9531713148590617,
+    "chi_ratio_cluster_void": 0.9227468075591082,
+    "light_speed_diff_fil_void_percent": 4.912934790516896,
+    "light_speed_diff_cluster_void_percent": 8.372089917628143,
+    "travel_time_diff_fil_void_Myr_per_Gly": -49.12934790516896,
+    "travel_time_diff_cluster_void_Myr_per_Gly": -83.72089917628143,
+    "lensing_enhancement_fil_void": 1.049129347905169,
+    "lensing_enhancement_cluster_void": 1.0837208991762814
+  },
+  "figure": "c:\\Papers\\paper_experiments\\cosmic_web_real_data\\lfm_cosmic_web_REAL_DATA_results.png",
+  "h0_status": "REJECTED",
+  "status": "COMPLETED"
+}

@@ -1,6 +1,6 @@
 {
   "experiment": "LFM SPARC Rotation Curves",
-  "date": "2026-02-07T14:06:22.386201",
+  "date": "2026-02-07T14:07:44.398692",
   "formula": "g_obs^2 = g_bar^2 + g_bar * a_0",
   "parameters": {
     "a_0_lfm": 1.0830375259007784e-10,
