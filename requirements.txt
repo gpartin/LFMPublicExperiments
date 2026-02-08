@@ -1,0 +1,2 @@
+﻿# Requirements for LFM Four-Force Emergence Test
+numpy>=1.20
