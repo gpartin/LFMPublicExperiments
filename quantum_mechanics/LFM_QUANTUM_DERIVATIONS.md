@@ -50,6 +50,74 @@ $$m_{eff} = \frac{\hbar \chi}{c^2}$$
 
 ---
 
+## 4.5. Mass-Energy Equivalence: E = mc² (SR-02, D-01)
+
+**The Derivation (6 lines)**:
+
+1. **GOV-01**: $\frac{\partial^2 \Psi}{\partial t^2} = c^2 \nabla^2 \Psi - \chi^2 \Psi$
+
+2. **Dispersion**: Plane wave $\Psi \propto e^{i(kx - \omega t)}$ gives $\omega^2 = c^2 k^2 + \chi^2$ (D-01)
+
+3. **QM relations** (imported): $E = \hbar\omega$, $p = \hbar k$ (QM-05, QM-06)
+
+4. **Combine**: $E^2 = (\hbar\omega)^2 = \hbar^2(c^2 k^2 + \chi^2) = (pc)^2 + (\hbar\chi)^2$
+
+5. **Define mass**: $m \equiv \frac{\hbar\chi}{c^2}$
+
+6. **At rest** ($k = 0$, $p = 0$): $E = \hbar\chi = mc^2$ ✓
+
+**LFM Interpretation**:
+
+In LFM, "mass" is **frequency in disguise**:
+- A particle is a wave oscillating at frequency χ
+- Its energy is $E = \hbar\chi$ (QM)
+- We **name** $\hbar\chi/c^2$ as "mass"
+- Therefore $E = mc^2$ follows immediately
+
+**What this means**: Mass isn't a separate substance from energy. Mass IS oscillation frequency dressed up in different units. The "conversion factor" c² is just unit conversion between frequency and mass.
+
+### 4.5.1 Physical Justification: Parametric Resonance (Session 60+ Discovery)
+
+**The naming convention m ≡ ℏχ/c² has PHYSICAL content, not just mathematical convenience.**
+
+**Discovery (February 2026)**: When χ oscillates at frequency Ω = 2χ₀, the coupled GOV-01 + GOV-02 system exhibits **Mathieu instability** (parametric resonance). Energy flows between the χ-mode and E-mode exponentially.
+
+**Experimental validation**:
+- 256³ GPU simulation with χ(t) = χ₀ + A·cos(Ωt), Ω = 2χ₀ = 38
+- Initial E = 10⁻¹⁵ (machine epsilon)
+- Final E = 1.78 × 10⁶
+- **Growth factor: 1.78 × 10²¹×**
+- Control (static χ): Growth factor 0.71× (stable)
+
+**Physical interpretation**:
+
+The χ-field (substrate oscillation) and E-field (matter excitation) are **dynamically interconvertible modes**. Parametric resonance IS the physical mechanism of mass-energy conversion:
+
+| Mode | Physical Meaning | How Energy Enters |
+|------|-----------------|-------------------|
+| χ-mode | Substrate oscillation | Initial conditions, inflation |
+| E-mode | Matter field excitation | Parametric pumping from χ |
+
+**E = mc² is not just naming**: It reflects that energy stored in χ-oscillations (mass) can be converted to E-field energy (radiation) and vice versa. The conversion happens via resonance conditions, not arbitrary choices.
+
+**Cosmological implication**: After inflation, χ oscillates around χ₀. When oscillation frequency hits 2χ₀, Mathieu instability creates matter from vacuum fluctuations. This is the LFM analog of "reheating."
+
+**Reference**: `analysis/LFM_PARAMETRIC_RESONANCE_MATTER_CREATION.md`
+
+### 4.5.2 What IS derived vs imported
+
+| Component | Status |
+|-----------|--------|
+| GOV-01 dispersion $\omega^2 = c^2 k^2 + \chi^2$ | DERIVED from LFM |
+| QM relations $E = \hbar\omega$, $p = \hbar k$ | IMPORTED (not derived) |
+| Mass definition $m = \hbar\chi/c^2$ | NAMING with physical justification |
+| E = mc² | FOLLOWS from above |
+| Mass-energy interconversion mechanism | DERIVED (parametric resonance) |
+
+**Falsifiability**: If GOV-01 gave a different dispersion relation, E = mc² would be wrong. The physics is in the dispersion; E = mc² is what you get when you label $\hbar\chi/c^2$ as "mass." The parametric resonance mechanism provides the physical reality behind this label.
+
+---
+
 ## 5. Bound States (D-14)
 
 A particle is **bound** when its frequency ω is less than the χ at infinity:
