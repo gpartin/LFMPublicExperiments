@@ -40,12 +40,14 @@ Where:
 
 ```
 LFMPublicExperiments/
-├── classical_mechanics/    # Projectile motion, orbits
-├── quantum_mechanics/      # Particle in box, tunneling
-├── gravity/                # Kepler, precession, binary mergers
+├── derivations/            # Analytical proofs (Einstein eqs, etc.)
+├── gravity/                # Kepler, precession, GW, binary mergers
 ├── electromagnetism/       # Coulomb, charge dynamics
 ├── nuclear_physics/        # QGP, confinement, parity
+├── quantum_mechanics/      # Particle in box, tunneling
+├── classical_mechanics/    # Projectile motion, orbits
 ├── cosmology/              # Dark energy, horizons
+├── LFM_EQUATIONS.md        # Complete equation reference
 └── README.md
 ```
 
@@ -61,6 +63,17 @@ Each experiment:
 cd classical_mechanics
 python lfm_projectile_motion.py
 ```
+
+## Beginner Start Here (/LFMPhysics Day 1)
+
+Run the first physics-only substrate tutorial experiment:
+
+- `gravity/lfm_foundation_1d_substrate.py`
+
+This script demonstrates three core LFM behaviors from GOV-01/GOV-02 only:
+1. Wave propagation in uniform χ background
+2. Propagation change across a high-χ barrier
+3. χ-well formation from localized energy via GOV-02 coupling
 
 ## Experiment Naming Convention
 
@@ -98,4 +111,9 @@ From this single integer:
 
 ## License
 
-CC-BY 4.0 - Attribution required
+`LFMPublicExperiments` is licensed under **Unlicense OR MIT** (your choice).
+
+- **Unlicense**: public-domain dedication for maximum freedom
+- **MIT**: permissive fallback for jurisdictions/workflows that prefer explicit license grant
+
+See [LICENSE](LICENSE) for full terms.
