@@ -49,8 +49,8 @@ OUTPUT_DIR.mkdir(exist_ok=True)
 # LFM parameters
 CHI_0 = 19.0
 C = 1.0
-G_COUPLING = 2.5  # Coupling strength for GOV-03
-TAU = 25  # Memory window (steps) - CRITICAL for dark matter effect
+G_COUPLING = 10.0  # Reduced for stability with higher amplitude
+TAU = 50  # Memory window (steps) - CRITICAL for dark matter effect
 
 
 def laplacian_2d(field, dx):
@@ -68,11 +68,21 @@ def laplacian_2d(field, dx):
     return lap
 
 
-def evolve_gov01(e, e_prev, chi, dx, dt):
-    """GOV-01: ∂²E/∂t² = c²∇²E − χ²E"""
+def evolve_gov01(e, e_prev, chi, dx, dt, damping=0.995):
+    """GOV-01: ∂²E/∂t² = c²∇²E − χ²E (with light damping to stabilize)"""
     lap_e = laplacian_2d(e, dx)
-    e_next = 2 * e - e_prev + dt * dt * (C * C * lap_e - chi * chi * e)
+    e_next = damping * (2 * e - e_prev) + dt * dt * (C * C * lap_e - chi * chi * e)
     return e_next
+
+
+def evolve_gov02(chi, chi_prev, e, dx, dt, kappa=0.016):
+    """GOV-02: ∂²χ/∂t² = c²∇²χ − κ(E² − E₀²)"""
+    lap_chi = laplacian_2d(chi, dx)
+    e_squared = e * e
+    chi_next = 2 * chi - chi_prev + dt * dt * (C * C * lap_chi - kappa * e_squared)
+    # Prevent χ from going too low
+    chi_next = np.maximum(chi_next, 0.5)
+    return chi_next
 
 
 def update_chi_memory(e_history, chi0, g, tau):
@@ -123,7 +133,7 @@ def run_chi_memory_2d_experiment():
     y = np.linspace(0, ly, ny)
     X, Y = np.meshgrid(x, y, indexing='ij')
     
-    dt = 0.2 * dx / C
+    dt = 0.1 * dx / C  # Reduced from 0.2 for better stability
     
     print(f"\nGrid: {nx}×{ny}, domain: {lx}×{ly}")
     print(f"dx={dx:.3f}, dt={dt:.4f}")
@@ -134,13 +144,14 @@ def run_chi_memory_2d_experiment():
     e = np.zeros((nx, ny))
     e_prev = np.zeros((nx, ny))
     chi = np.ones((nx, ny)) * CHI_0
+    chi_prev = np.ones((nx, ny)) * CHI_0
     
     # Energy history for memory (last τ steps)
     e_history = []
     
     # Mass parameters
     mass_width = 8.0
-    mass_amplitude = 1.2
+    mass_amplitude = 2.0  # Increased for visibility
     
     # Phases
     phase_a_end = 500    # Mass at left
@@ -191,20 +202,19 @@ def run_chi_memory_2d_experiment():
         # Create energy source at current position
         e_source = create_moving_mass(X, Y, mass_x, mass_y, mass_width, mass_amplitude)
         
-        # Add source as forcing term (maintain standing wave)
-        e = 0.95 * e + 0.05 * e_source  # Gradual refresh
+        # Moderate continuous injection to maintain localized mass
+        # (Balanced with damping in evolve_gov01 to prevent instability)
+        e = 0.97 * e + 0.03 * e_source
         
         # Evolve E via GOV-01
         e_next = evolve_gov01(e, e_prev, chi, dx, dt)
         e_prev = e.copy()
         e = e_next.copy()
         
-        # Update χ via GOV-03 with memory
-        e_history.append(e.copy())
-        if len(e_history) > TAU + 10:
-            e_history.pop(0)  # Keep only recent history
-        
-        chi = update_chi_memory(e_history, CHI_0, G_COUPLING, TAU)
+        # Evolve χ via GOV-02 (wave dynamics with natural memory)
+        chi_next = evolve_gov02(chi, chi_prev, e, dx, dt, kappa=G_COUPLING)
+        chi_prev = chi.copy()
+        chi = chi_next.copy()
         
         # Save animation frame
         if step % frame_interval == 0:
@@ -282,260 +292,107 @@ def run_chi_memory_2d_experiment():
     print("Creating animated GIF...")
     print("=" * 70)
     
-    fig_anim, axes = plt.subplots(2, 2, figsize=(14, 10))
-    ax_e = axes[0, 0]
-    ax_chi = axes[0, 1]
-    ax_trace = axes[1, 0]
-    ax_profile = axes[1, 1]
+    fig_anim = plt.figure(figsize=(14, 6))
+    gs = fig_anim.add_gridspec(1, 2, width_ratios=[1, 1.2])
+    ax_chi = fig_anim.add_subplot(gs[0])
+    ax_profile = fig_anim.add_subplot(gs[1])
     
-    # Find actual chi range for better color scaling
+    # Find chi range for color scaling
     chi_min_global = min([np.min(f['chi']) for f in animation_frames])
     chi_max_global = CHI_0
+    # Zoom χ colorscale to show wells clearly
+    chi_display_min = max(chi_min_global - 0.5, 17.0)
+    chi_display_max = CHI_0
     
     def animate(frame_idx):
         frame = animation_frames[frame_idx]
         step = frame['step']
-        e_frame = frame['e']
         chi_frame = frame['chi']
         mass_x, mass_y = frame['mass_position']
         
-        ax_e.clear()
+        # Determine phase for title
+        if step < phase_a_end:
+            phase_label = 'PHASE A: Mass at LEFT'
+            phase_color = 'blue'
+        elif step < phase_b_end:
+            phase_label = 'PHASE B: Mass moving LEFT→RIGHT'
+            phase_color = 'green'
+        else:
+            phase_label = 'PHASE C: Mass at RIGHT (LEFT has memory)'
+            phase_color = 'red'
+        
         ax_chi.clear()
-        ax_trace.clear()
         ax_profile.clear()
         
-        # Determine phase
-        if step < phase_a_end:
-            phase = 'PHASE A: MASS AT LEFT'
-            phase_color = 'blue'
-            status_left = 'MATTER HERE!'
-            status_right = ''
-        elif step < phase_b_end:
-            phase = 'PHASE B: MASS MOVING LEFT→RIGHT'
-            phase_color = 'green'
-            status_left = 'Matter leaving...'
-            status_right = 'Matter arriving...'
-        else:
-            phase = 'PHASE C: MASS AT RIGHT'
-            phase_color = 'red'
-            status_left = '← MEMORY! (No matter)'
-            status_right = 'MATTER HERE! →'
+        # Chi field with marker at monitor location
+        im = ax_chi.imshow(chi_frame.T, origin='lower', cmap='RdYlBu_r',
+                          extent=[0, lx, 0, ly], vmin=chi_display_min, vmax=chi_display_max)
+        ax_chi.plot(x[monitor_ix], y[monitor_iy], 'wo', markersize=12, 
+                   markeredgewidth=2, label='Monitor (LEFT)')
+        ax_chi.set_title('χ Field\n(Gravity/Curvature)', fontsize=12, fontweight='bold')
+        ax_chi.set_xlabel('x')
+        ax_chi.set_ylabel('y')
         
-        # E field plot with better annotations
-        im_e = ax_e.imshow(e_frame.T, origin='lower', cmap='hot',
-                          extent=[0, lx, 0, ly], vmin=0, vmax=mass_amplitude*1.1)
-        ax_e.plot(mass_x, mass_y, 'wo', markersize=25, markeredgewidth=3, 
-                 markerfacecolor='none', label='MASS LOCATION')
-        ax_e.plot(x[monitor_ix], y[monitor_iy], 'c*', markersize=30, label='MONITOR')
+        # RIGHT PANEL: χ profile along x-axis at y=50 (middle)
+        mid_y_idx = ny // 2
+        chi_slice = chi_frame[:, mid_y_idx]
         
-        # Add text annotations
-        if step < phase_a_end or (step >= phase_b_end):
-            ax_e.text(x[monitor_ix], y[monitor_iy]-8, status_left, 
-                     color='cyan', fontsize=14, fontweight='bold', ha='center',
-                     bbox=dict(boxstyle='round', facecolor='black', alpha=0.7))
-        if step >= phase_b_end:
-            ax_e.text(mass_x, mass_y-8, status_right, 
-                     color='white', fontsize=14, fontweight='bold', ha='center',
-                     bbox=dict(boxstyle='round', facecolor='black', alpha=0.7))
+        # Plot χ profile
+        ax_profile.plot(x, chi_slice, 'b-', linewidth=3, label='χ(x) at y=50')
+        ax_profile.axhline(CHI_0, color='gray', linestyle='--', linewidth=2, 
+                          label=f'χ₀ = {CHI_0} (flat space)')
         
-        ax_e.set_xlabel('x', fontsize=12)
-        ax_e.set_ylabel('y', fontsize=12)
-        ax_e.set_title('E Field (Energy/Matter)', fontsize=14, fontweight='bold')
-        ax_e.legend(loc='upper left', fontsize=10)
-        plt.colorbar(im_e, ax=ax_e, label='Energy')
+        # Mark LEFT position (where mass WAS in phase A)
+        chi_at_left = chi_frame[monitor_ix, monitor_iy]
+        ax_profile.axvline(x[monitor_ix], color='red', linestyle=':', linewidth=2, alpha=0.7)
+        ax_profile.plot(x[monitor_ix], chi_at_left, 'ro', markersize=15, 
+                       markeredgewidth=2, markerfacecolor='red')
         
-        # Chi field plot with FULL range to show wells clearly
-        im_chi = ax_chi.imshow(chi_frame.T, origin='lower', cmap='plasma',
-                              extent=[0, lx, 0, ly], vmin=chi_min_global, vmax=chi_max_global)
-        ax_chi.plot(mass_x, mass_y, 'wo', markersize=25, markeredgewidth=3,
-                   markerfacecolor='none')
-        ax_chi.plot(x[monitor_ix], y[monitor_iy], 'c*', markersize=30)
+        # Add text showing actual χ value at LEFT
+        well_depth = CHI_0 - chi_at_left
+        ax_profile.text(x[monitor_ix]+5, chi_at_left, 
+                       f'LEFT:\nχ={chi_at_left:.2f}\nwell={well_depth:.2f}',
+                       fontsize=11, fontweight='bold', color='red',
+                       bbox=dict(boxstyle='round', facecolor='white', alpha=0.9))
         
-        # Highlight monitor region with circle
-        circle_left = plt.Circle((x[monitor_ix], y[monitor_iy]), 10, 
-                                color='cyan', fill=False, linewidth=3, linestyle='--')
-        ax_chi.add_patch(circle_left)
+        # Mark current mass position
+        mass_ix = np.argmin(np.abs(x - mass_x))
+        chi_at_mass = chi_frame[mass_ix, mid_y_idx]
+        ax_profile.axvline(mass_x, color='orange', linestyle='-.', linewidth=2, alpha=0.7)
+        ax_profile.plot(mass_x, chi_at_mass, 'o', color='orange', markersize=15,
+                       markeredgewidth=2)
+        ax_profile.text(mass_x+5, chi_at_mass+0.3,
+                       f'MASS:\nχ={chi_at_mass:.2f}',
+                       fontsize=11, fontweight='bold', color='orange',
+                       bbox=dict(boxstyle='round', facecolor='white', alpha=0.9))
         
-        # Get chi values at key points
-        chi_at_monitor = chi_frame[monitor_ix, monitor_iy]
-        well_depth = CHI_0 - chi_at_monitor
-        
-        # Add chi value annotation at monitor
-        ax_chi.text(x[monitor_ix], y[monitor_iy]+12, 
-                   f'χ = {chi_at_monitor:.2f}\nWell = {well_depth:.2f}',
-                   color='cyan', fontsize=12, fontweight='bold', ha='center',
-                   bbox=dict(boxstyle='round', facecolor='black', alpha=0.8))
-        
-        ax_chi.set_xlabel('x', fontsize=12)
-        ax_chi.set_ylabel('y', fontsize=12)
-        ax_chi.set_title('χ Field (Substrate/Gravity)', fontsize=14, fontweight='bold')
-        plt.colorbar(im_chi, ax=ax_chi, label='χ (19=flat, <19=well)')
-        
-        # Bottom left: Time trace at monitor point
-        current_frame = frame_idx
-        times_so_far = [animation_frames[i]['step']*dt for i in range(current_frame+1)]
-        e_so_far = [e_monitor[animation_frames[i]['step']] for i in range(current_frame+1)]
-        chi_so_far = [chi_monitor[animation_frames[i]['step']] for i in range(current_frame+1)]
-        
-        ax_trace_twin = ax_trace.twinx()
-        ax_trace.plot(times_so_far, e_so_far, 'r-', linewidth=3, label='E at monitor')
-        ax_trace_twin.plot(times_so_far, chi_so_far, 'b-', linewidth=3, label='χ at monitor')
-        
-        ax_trace.axhline(0, color='gray', linestyle='--', alpha=0.3)
-        ax_trace_twin.axhline(CHI_0, color='gray', linestyle='--', alpha=0.3)
-        ax_trace_twin.axhline(chi_min_global, color='purple', linestyle=':', linewidth=2, alpha=0.5)
-        
-        ax_trace.set_xlabel('Time', fontsize=12)
-        ax_trace.set_ylabel('E (red)', color='r', fontsize=12)
-        ax_trace_twin.set_ylabel('χ (blue)', color='b', fontsize=12)
-        ax_trace.tick_params(axis='y', labelcolor='r')
-        ax_trace_twin.tick_params(axis='y', labelcolor='b')
-        ax_trace.set_title('Monitor Point Time History', fontsize=12, fontweight='bold')
-        ax_trace.grid(alpha=0.3)
-        ax_trace.set_xlim(0, phase_c_end*dt)
-        
-        # Bottom right: Cross-section showing χ wells
-        mid_y = ny // 2
-        x_slice = np.arange(nx)
-        chi_slice = chi_frame[:, mid_y]
-        e_slice = e_frame[:, mid_y]
-        
-        ax_profile_twin = ax_profile.twinx()
-        ax_profile.fill_between(x, chi_slice, CHI_0, where=(chi_slice < CHI_0),
-                               color='purple', alpha=0.3, label='χ-well (gravity)')
-        ax_profile.plot(x, chi_slice, 'b-', linewidth=2, label='χ profile')
-        ax_profile_twin.plot(x, e_slice, 'r-', linewidth=2, label='E profile')
-        
-        ax_profile.axhline(CHI_0, color='gray', linestyle='--', linewidth=2, label='χ₀=19')
-        ax_profile.axvline(x[monitor_ix], color='cyan', linestyle=':', linewidth=2, label='Monitor')
-        
-        ax_profile.set_xlabel('x position', fontsize=12)
-        ax_profile.set_ylabel('χ (blue)', color='b', fontsize=12)
-        ax_profile_twin.set_ylabel('E (red)', color='r', fontsize=12)
-        ax_profile.tick_params(axis='y', labelcolor='b')
-        ax_profile_twin.tick_params(axis='y', labelcolor='r')
-        ax_profile.set_title('Cross-Section at y=50 (shows wells)', fontsize=12, fontweight='bold')
-        ax_profile.set_ylim(chi_min_global-0.5, CHI_0+0.5)
-        ax_profile.legend(loc='upper left', fontsize=8)
+        ax_profile.set_xlabel('x position', fontsize=11)
+        ax_profile.set_ylabel('χ value', fontsize=11, color='b')
+        ax_profile.set_title('χ Profile (shows memory)\nRed=LEFT, Orange=MASS', 
+                            fontsize=12, fontweight='bold')
+        ax_profile.set_ylim(chi_display_min-0.2, CHI_0+0.3)
         ax_profile.grid(alpha=0.3)
+        ax_profile.legend(loc='lower right', fontsize=9)
         
-        fig_anim.suptitle(f'{phase} | Step {step}, t={step*dt:.1f}', 
+        # Phase label at top
+        fig_anim.suptitle(f'{phase_label} | Step {step}', 
                          fontsize=16, fontweight='bold', color=phase_color)
         
         return []
     
     anim = FuncAnimation(fig_anim, animate, frames=len(animation_frames),
-                        interval=200, blit=True)  # Slower: 200ms per frame
+                        interval=100, blit=True)
     
     gif_path = OUTPUT_DIR / "chi_memory_2d_animation.gif"
-    writer = PillowWriter(fps=5)  # Slower: 5 fps instead of 10
+    writer = PillowWriter(fps=10)
     anim.save(gif_path, writer=writer)
     plt.close(fig_anim)
     
-    print(f"Saved animation: {gif_path}")
-    print(f"  {len(animation_frames)} frames, {len(animation_frames)/5:.1f} seconds")
-    print(f"  {len(animation_frames)} frames, {len(animation_frames)/10:.1f} seconds")
+    print(f"\nSaved animation: {gif_path}")
+    print(f"  {len(animation_frames)} frames")
     
-    # Create visualization
-    fig = plt.figure(figsize=(16, 10))
-    gs = fig.add_gridspec(3, 4, hspace=0.3, wspace=0.3)
-    
-    # Row 1: Phase A snapshots (Mass at LEFT)
-    ax1 = fig.add_subplot(gs[0, 0])
-    im1 = ax1.imshow(snapshots['phase_a']['e'].T, origin='lower', cmap='hot', 
-                     extent=[0, lx, 0, ly], vmin=0, vmax=mass_amplitude)
-    ax1.set_title('Phase A: E (mass at LEFT)', fontsize=10, fontweight='bold')
-    ax1.set_xlabel('x')
-    ax1.set_ylabel('y')
-    plt.colorbar(im1, ax=ax1, label='E')
-    ax1.plot(x[monitor_ix], y[monitor_iy], 'c*', markersize=15, label='Monitor')
-    ax1.legend(loc='upper right', fontsize=8)
-    
-    ax2 = fig.add_subplot(gs[0, 1])
-    chi_a = snapshots['phase_a']['chi'].T
-    im2 = ax2.imshow(chi_a, origin='lower', cmap='viridis_r',
-                     extent=[0, lx, 0, ly], vmin=CHI_0-2, vmax=CHI_0)
-    ax2.set_title(f'Phase A: χ (well forms)', fontsize=10, fontweight='bold')
-    ax2.set_xlabel('x')
-    ax2.set_ylabel('y')
-    plt.colorbar(im2, ax=ax2, label='χ')
-    ax2.plot(x[monitor_ix], y[monitor_iy], 'c*', markersize=15)
-    
-    # Row 2: Phase B snapshots (Mass in TRANSIT)
-    ax3 = fig.add_subplot(gs[1, 0])
-    im3 = ax3.imshow(snapshots['phase_b']['e'].T, origin='lower', cmap='hot',
-                     extent=[0, lx, 0, ly], vmin=0, vmax=mass_amplitude)
-    ax3.set_title('Phase B: E (mass moving)', fontsize=10, fontweight='bold')
-    ax3.set_xlabel('x')
-    ax3.set_ylabel('y')
-    plt.colorbar(im3, ax=ax3, label='E')
-    ax3.plot(x[monitor_ix], y[monitor_iy], 'c*', markersize=15)
-    
-    ax4 = fig.add_subplot(gs[1, 1])
-    chi_b = snapshots['phase_b']['chi'].T
-    im4 = ax4.imshow(chi_b, origin='lower', cmap='viridis_r',
-                     extent=[0, lx, 0, ly], vmin=CHI_0-2, vmax=CHI_0)
-    ax4.set_title(f'Phase B: χ (memory trail)', fontsize=10, fontweight='bold')
-    ax4.set_xlabel('x')
-    ax4.set_ylabel('y')
-    plt.colorbar(im4, ax=ax4, label='χ')
-    ax4.plot(x[monitor_ix], y[monitor_iy], 'c*', markersize=15)
-    
-    # Row 3: Phase C snapshots (Mass at RIGHT, observing memory at LEFT)
-    ax5 = fig.add_subplot(gs[2, 0])
-    im5 = ax5.imshow(snapshots['phase_c']['e'].T, origin='lower', cmap='hot',
-                     extent=[0, lx, 0, ly], vmin=0, vmax=mass_amplitude)
-    ax5.set_title('Phase C: E (mass at RIGHT)', fontsize=10, fontweight='bold')
-    ax5.set_xlabel('x')
-    ax5.set_ylabel('y')
-    plt.colorbar(im5, ax=ax5, label='E')
-    ax5.plot(x[monitor_ix], y[monitor_iy], 'c*', markersize=15, label='Monitor (LEFT)')
-    ax5.legend(loc='upper right', fontsize=8)
-    
-    ax6 = fig.add_subplot(gs[2, 1])
-    chi_c = snapshots['phase_c']['chi'].T
-    im6 = ax6.imshow(chi_c, origin='lower', cmap='viridis_r',
-                     extent=[0, lx, 0, ly], vmin=CHI_0-2, vmax=CHI_0)
-    ax6.set_title(f'Phase C: χ (MEMORY at LEFT!)', fontsize=10, fontweight='bold')
-    ax6.set_xlabel('x')
-    ax6.set_ylabel('y')
-    plt.colorbar(im6, ax=ax6, label='χ')
-    ax6.plot(x[monitor_ix], y[monitor_iy], 'c*', markersize=15)
-    
-    # Time series plots
-    ax7 = fig.add_subplot(gs[:, 2:])
-    time = np.array(time_steps) * dt
-    ax7_twin = ax7.twinx()
-    
-    line1 = ax7.plot(time, e_monitor, 'r-', linewidth=2, label='E at monitor (LEFT)')
-    line2 = ax7_twin.plot(time, chi_monitor, 'b-', linewidth=2, label='χ at monitor (LEFT)')
-    
-    ax7.axhline(0, color='gray', linestyle='--', alpha=0.3)
-    ax7_twin.axhline(CHI_0, color='gray', linestyle='--', alpha=0.3, label='χ₀=19')
-    
-    ax7.axvspan(0, phase_a_end*dt, alpha=0.1, color='blue', label='Phase A: Mass at LEFT')
-    ax7.axvspan(phase_a_end*dt, phase_b_end*dt, alpha=0.1, color='green', label='Phase B: Transit')
-    ax7.axvspan(phase_b_end*dt, phase_c_end*dt, alpha=0.1, color='red', label='Phase C: Mass at RIGHT')
-    
-    ax7.set_xlabel('Time', fontsize=12)
-    ax7.set_ylabel('E at LEFT position', color='r', fontsize=12)
-    ax7_twin.set_ylabel('χ at LEFT position', color='b', fontsize=12)
-    ax7.tick_params(axis='y', labelcolor='r')
-    ax7_twin.tick_params(axis='y', labelcolor='b')
-    
-    ax7.set_title('χ-Memory Time Series: LEFT Position\n(Matter vacates after Phase B, but χ-well PERSISTS)',
-                  fontsize=12, fontweight='bold')
-    
-    # Combine legends
-    lines = line1 + line2
-    labels = [l.get_label() for l in lines]
-    ax7.legend(lines, labels, loc='upper left', fontsize=10)
-    
-    ax7.grid(alpha=0.3)
-    
-    fig_path = OUTPUT_DIR / "chi_memory_2d_dark_matter.png"
-    plt.savefig(fig_path, dpi=150, bbox_inches='tight')
-    print(f"\nSaved figure: {fig_path}")
+    # Clean up animation
+    plt.close('all')
     
     # Save results
     results = {
@@ -566,7 +423,6 @@ def run_chi_memory_2d_experiment():
             "memory_observed": bool(h0_rejected)
         },
         "outputs": {
-            "figure": str(fig_path.name),
             "animation": str(gif_path.name)
         }
     }
