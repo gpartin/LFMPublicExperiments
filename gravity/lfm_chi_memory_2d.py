@@ -37,6 +37,7 @@ Date: February 19, 2026
 
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation, PillowWriter
 from pathlib import Path
 import json
 from datetime import datetime
@@ -165,6 +166,10 @@ def run_chi_memory_2d_experiment():
     e_monitor = []
     time_steps = []
     
+    # Animation frames (save every N steps)
+    animation_frames = []
+    frame_interval = 30  # Save frame every 30 steps
+    
     print("\n" + "-" * 70)
     print("PHASE A (0-500): Mass at LEFT, creating χ-well")
     print("-" * 70)
@@ -200,6 +205,15 @@ def run_chi_memory_2d_experiment():
             e_history.pop(0)  # Keep only recent history
         
         chi = update_chi_memory(e_history, CHI_0, G_COUPLING, TAU)
+        
+        # Save animation frame
+        if step % frame_interval == 0:
+            animation_frames.append({
+                'step': step,
+                'e': e.copy(),
+                'chi': chi.copy(),
+                'mass_position': (mass_x, mass_y)
+            })
         
         # Monitor
         chi_monitor.append(chi[monitor_ix, monitor_iy])
@@ -262,6 +276,69 @@ def run_chi_memory_2d_experiment():
     else:
         print("CONCLUSION: No significant memory observed. Try larger τ or stronger coupling.")
     print("=" * 70)
+    
+    # Create animated GIF
+    print("\n" + "=" * 70)
+    print("Creating animated GIF...")
+    print("=" * 70)
+    
+    fig_anim, (ax_e, ax_chi) = plt.subplots(1, 2, figsize=(12, 5))
+    
+    def animate(frame_idx):
+        frame = animation_frames[frame_idx]
+        step = frame['step']
+        e_frame = frame['e']
+        chi_frame = frame['chi']
+        mass_x, mass_y = frame['mass_position']
+        
+        ax_e.clear()
+        ax_chi.clear()
+        
+        # E plot
+        im_e = ax_e.imshow(e_frame.T, origin='lower', cmap='hot',
+                          extent=[0, lx, 0, ly], vmin=0, vmax=mass_amplitude)
+        ax_e.plot(mass_x, mass_y, 'g*', markersize=20, label='Mass')
+        ax_e.plot(x[monitor_ix], y[monitor_iy], 'c*', markersize=15, label='Monitor')
+        ax_e.set_xlabel('x')
+        ax_e.set_ylabel('y')
+        ax_e.set_title(f'E Field - Step {step}, t={step*dt:.1f}', fontweight='bold')
+        ax_e.legend(loc='upper right')
+        
+        # Chi plot
+        im_chi = ax_chi.imshow(chi_frame.T, origin='lower', cmap='viridis_r',
+                              extent=[0, lx, 0, ly], vmin=CHI_0-2, vmax=CHI_0)
+        ax_chi.plot(mass_x, mass_y, 'g*', markersize=20, label='Mass')
+        ax_chi.plot(x[monitor_ix], y[monitor_iy], 'c*', markersize=15, label='Monitor')
+        ax_chi.set_xlabel('x')
+        ax_chi.set_ylabel('y')
+        ax_chi.set_title(f'χ Field (Memory) - Step {step}', fontweight='bold')
+        ax_chi.legend(loc='upper right')
+        
+        # Determine phase
+        if step < phase_a_end:
+            phase = 'PHASE A: Mass at LEFT'
+            color = 'blue'
+        elif step < phase_b_end:
+            phase = 'PHASE B: Mass MOVING'
+            color = 'green'
+        else:
+            phase = 'PHASE C: Mass at RIGHT (Memory at LEFT!)'
+            color = 'red'
+        
+        fig_anim.suptitle(phase, fontsize=14, fontweight='bold', color=color)
+        
+        return []
+    
+    anim = FuncAnimation(fig_anim, animate, frames=len(animation_frames),
+                        interval=100, blit=True)
+    
+    gif_path = OUTPUT_DIR / "chi_memory_2d_animation.gif"
+    writer = PillowWriter(fps=10)
+    anim.save(gif_path, writer=writer)
+    plt.close(fig_anim)
+    
+    print(f"Saved animation: {gif_path}")
+    print(f"  {len(animation_frames)} frames, {len(animation_frames)/10:.1f} seconds")
     
     # Create visualization
     fig = plt.figure(figsize=(16, 10))
@@ -393,7 +470,8 @@ def run_chi_memory_2d_experiment():
             "memory_observed": bool(h0_rejected)
         },
         "outputs": {
-            "figure": str(fig_path.name)
+            "figure": str(fig_path.name),
+            "animation": str(gif_path.name)
         }
     }
     
