@@ -282,7 +282,15 @@ def run_chi_memory_2d_experiment():
     print("Creating animated GIF...")
     print("=" * 70)
     
-    fig_anim, (ax_e, ax_chi) = plt.subplots(1, 2, figsize=(12, 5))
+    fig_anim, axes = plt.subplots(2, 2, figsize=(14, 10))
+    ax_e = axes[0, 0]
+    ax_chi = axes[0, 1]
+    ax_trace = axes[1, 0]
+    ax_profile = axes[1, 1]
+    
+    # Find actual chi range for better color scaling
+    chi_min_global = min([np.min(f['chi']) for f in animation_frames])
+    chi_max_global = CHI_0
     
     def animate(frame_idx):
         frame = animation_frames[frame_idx]
@@ -293,51 +301,139 @@ def run_chi_memory_2d_experiment():
         
         ax_e.clear()
         ax_chi.clear()
-        
-        # E plot
-        im_e = ax_e.imshow(e_frame.T, origin='lower', cmap='hot',
-                          extent=[0, lx, 0, ly], vmin=0, vmax=mass_amplitude)
-        ax_e.plot(mass_x, mass_y, 'g*', markersize=20, label='Mass')
-        ax_e.plot(x[monitor_ix], y[monitor_iy], 'c*', markersize=15, label='Monitor')
-        ax_e.set_xlabel('x')
-        ax_e.set_ylabel('y')
-        ax_e.set_title(f'E Field - Step {step}, t={step*dt:.1f}', fontweight='bold')
-        ax_e.legend(loc='upper right')
-        
-        # Chi plot
-        im_chi = ax_chi.imshow(chi_frame.T, origin='lower', cmap='viridis_r',
-                              extent=[0, lx, 0, ly], vmin=CHI_0-2, vmax=CHI_0)
-        ax_chi.plot(mass_x, mass_y, 'g*', markersize=20, label='Mass')
-        ax_chi.plot(x[monitor_ix], y[monitor_iy], 'c*', markersize=15, label='Monitor')
-        ax_chi.set_xlabel('x')
-        ax_chi.set_ylabel('y')
-        ax_chi.set_title(f'χ Field (Memory) - Step {step}', fontweight='bold')
-        ax_chi.legend(loc='upper right')
+        ax_trace.clear()
+        ax_profile.clear()
         
         # Determine phase
         if step < phase_a_end:
-            phase = 'PHASE A: Mass at LEFT'
-            color = 'blue'
+            phase = 'PHASE A: MASS AT LEFT'
+            phase_color = 'blue'
+            status_left = 'MATTER HERE!'
+            status_right = ''
         elif step < phase_b_end:
-            phase = 'PHASE B: Mass MOVING'
-            color = 'green'
+            phase = 'PHASE B: MASS MOVING LEFT→RIGHT'
+            phase_color = 'green'
+            status_left = 'Matter leaving...'
+            status_right = 'Matter arriving...'
         else:
-            phase = 'PHASE C: Mass at RIGHT (Memory at LEFT!)'
-            color = 'red'
+            phase = 'PHASE C: MASS AT RIGHT'
+            phase_color = 'red'
+            status_left = '← MEMORY! (No matter)'
+            status_right = 'MATTER HERE! →'
         
-        fig_anim.suptitle(phase, fontsize=14, fontweight='bold', color=color)
+        # E field plot with better annotations
+        im_e = ax_e.imshow(e_frame.T, origin='lower', cmap='hot',
+                          extent=[0, lx, 0, ly], vmin=0, vmax=mass_amplitude*1.1)
+        ax_e.plot(mass_x, mass_y, 'wo', markersize=25, markeredgewidth=3, 
+                 markerfacecolor='none', label='MASS LOCATION')
+        ax_e.plot(x[monitor_ix], y[monitor_iy], 'c*', markersize=30, label='MONITOR')
+        
+        # Add text annotations
+        if step < phase_a_end or (step >= phase_b_end):
+            ax_e.text(x[monitor_ix], y[monitor_iy]-8, status_left, 
+                     color='cyan', fontsize=14, fontweight='bold', ha='center',
+                     bbox=dict(boxstyle='round', facecolor='black', alpha=0.7))
+        if step >= phase_b_end:
+            ax_e.text(mass_x, mass_y-8, status_right, 
+                     color='white', fontsize=14, fontweight='bold', ha='center',
+                     bbox=dict(boxstyle='round', facecolor='black', alpha=0.7))
+        
+        ax_e.set_xlabel('x', fontsize=12)
+        ax_e.set_ylabel('y', fontsize=12)
+        ax_e.set_title('E Field (Energy/Matter)', fontsize=14, fontweight='bold')
+        ax_e.legend(loc='upper left', fontsize=10)
+        plt.colorbar(im_e, ax=ax_e, label='Energy')
+        
+        # Chi field plot with FULL range to show wells clearly
+        im_chi = ax_chi.imshow(chi_frame.T, origin='lower', cmap='plasma',
+                              extent=[0, lx, 0, ly], vmin=chi_min_global, vmax=chi_max_global)
+        ax_chi.plot(mass_x, mass_y, 'wo', markersize=25, markeredgewidth=3,
+                   markerfacecolor='none')
+        ax_chi.plot(x[monitor_ix], y[monitor_iy], 'c*', markersize=30)
+        
+        # Highlight monitor region with circle
+        circle_left = plt.Circle((x[monitor_ix], y[monitor_iy]), 10, 
+                                color='cyan', fill=False, linewidth=3, linestyle='--')
+        ax_chi.add_patch(circle_left)
+        
+        # Get chi values at key points
+        chi_at_monitor = chi_frame[monitor_ix, monitor_iy]
+        well_depth = CHI_0 - chi_at_monitor
+        
+        # Add chi value annotation at monitor
+        ax_chi.text(x[monitor_ix], y[monitor_iy]+12, 
+                   f'χ = {chi_at_monitor:.2f}\nWell = {well_depth:.2f}',
+                   color='cyan', fontsize=12, fontweight='bold', ha='center',
+                   bbox=dict(boxstyle='round', facecolor='black', alpha=0.8))
+        
+        ax_chi.set_xlabel('x', fontsize=12)
+        ax_chi.set_ylabel('y', fontsize=12)
+        ax_chi.set_title('χ Field (Substrate/Gravity)', fontsize=14, fontweight='bold')
+        plt.colorbar(im_chi, ax=ax_chi, label='χ (19=flat, <19=well)')
+        
+        # Bottom left: Time trace at monitor point
+        current_frame = frame_idx
+        times_so_far = [animation_frames[i]['step']*dt for i in range(current_frame+1)]
+        e_so_far = [e_monitor[animation_frames[i]['step']] for i in range(current_frame+1)]
+        chi_so_far = [chi_monitor[animation_frames[i]['step']] for i in range(current_frame+1)]
+        
+        ax_trace_twin = ax_trace.twinx()
+        ax_trace.plot(times_so_far, e_so_far, 'r-', linewidth=3, label='E at monitor')
+        ax_trace_twin.plot(times_so_far, chi_so_far, 'b-', linewidth=3, label='χ at monitor')
+        
+        ax_trace.axhline(0, color='gray', linestyle='--', alpha=0.3)
+        ax_trace_twin.axhline(CHI_0, color='gray', linestyle='--', alpha=0.3)
+        ax_trace_twin.axhline(chi_min_global, color='purple', linestyle=':', linewidth=2, alpha=0.5)
+        
+        ax_trace.set_xlabel('Time', fontsize=12)
+        ax_trace.set_ylabel('E (red)', color='r', fontsize=12)
+        ax_trace_twin.set_ylabel('χ (blue)', color='b', fontsize=12)
+        ax_trace.tick_params(axis='y', labelcolor='r')
+        ax_trace_twin.tick_params(axis='y', labelcolor='b')
+        ax_trace.set_title('Monitor Point Time History', fontsize=12, fontweight='bold')
+        ax_trace.grid(alpha=0.3)
+        ax_trace.set_xlim(0, phase_c_end*dt)
+        
+        # Bottom right: Cross-section showing χ wells
+        mid_y = ny // 2
+        x_slice = np.arange(nx)
+        chi_slice = chi_frame[:, mid_y]
+        e_slice = e_frame[:, mid_y]
+        
+        ax_profile_twin = ax_profile.twinx()
+        ax_profile.fill_between(x, chi_slice, CHI_0, where=(chi_slice < CHI_0),
+                               color='purple', alpha=0.3, label='χ-well (gravity)')
+        ax_profile.plot(x, chi_slice, 'b-', linewidth=2, label='χ profile')
+        ax_profile_twin.plot(x, e_slice, 'r-', linewidth=2, label='E profile')
+        
+        ax_profile.axhline(CHI_0, color='gray', linestyle='--', linewidth=2, label='χ₀=19')
+        ax_profile.axvline(x[monitor_ix], color='cyan', linestyle=':', linewidth=2, label='Monitor')
+        
+        ax_profile.set_xlabel('x position', fontsize=12)
+        ax_profile.set_ylabel('χ (blue)', color='b', fontsize=12)
+        ax_profile_twin.set_ylabel('E (red)', color='r', fontsize=12)
+        ax_profile.tick_params(axis='y', labelcolor='b')
+        ax_profile_twin.tick_params(axis='y', labelcolor='r')
+        ax_profile.set_title('Cross-Section at y=50 (shows wells)', fontsize=12, fontweight='bold')
+        ax_profile.set_ylim(chi_min_global-0.5, CHI_0+0.5)
+        ax_profile.legend(loc='upper left', fontsize=8)
+        ax_profile.grid(alpha=0.3)
+        
+        fig_anim.suptitle(f'{phase} | Step {step}, t={step*dt:.1f}', 
+                         fontsize=16, fontweight='bold', color=phase_color)
         
         return []
     
     anim = FuncAnimation(fig_anim, animate, frames=len(animation_frames),
-                        interval=100, blit=True)
+                        interval=200, blit=True)  # Slower: 200ms per frame
     
     gif_path = OUTPUT_DIR / "chi_memory_2d_animation.gif"
-    writer = PillowWriter(fps=10)
+    writer = PillowWriter(fps=5)  # Slower: 5 fps instead of 10
     anim.save(gif_path, writer=writer)
     plt.close(fig_anim)
     
     print(f"Saved animation: {gif_path}")
+    print(f"  {len(animation_frames)} frames, {len(animation_frames)/5:.1f} seconds")
     print(f"  {len(animation_frames)} frames, {len(animation_frames)/10:.1f} seconds")
     
     # Create visualization
