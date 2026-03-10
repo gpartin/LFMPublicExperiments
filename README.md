@@ -28,6 +28,7 @@ Where:
 
 | Force/Phenomenon | Mechanism | Folder |
 |------------------|-----------|--------|
+| **All Four Forces** | Single lattice, GOV-01+02 only | `four_forces/` |
 | **Gravity** | χ-wells from energy concentration | `gravity/` |
 | **Electromagnetism** | Phase θ interference | `electromagnetism/` |
 | **Strong Force** | χ-gradients between color sources | `nuclear_physics/` |
@@ -40,6 +41,7 @@ Where:
 
 ```
 LFMPublicExperiments/
+├── four_forces/            # ALL 4 forces from 2 equations (flagship)
 ├── derivations/            # Analytical proofs (Einstein eqs, etc.)
 ├── gravity/                # Kepler, precession, GW, binary mergers
 ├── electromagnetism/       # Coulomb, charge dynamics
