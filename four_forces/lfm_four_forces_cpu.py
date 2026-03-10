@@ -593,11 +593,15 @@ def run():
     #    opposite-phase (destructive).  This IS the Coulomb
     #    mechanism -- interference changes the energy landscape.
     #
-    #    NOVEL FINDING: Same-phase pairs converge FASTER, not
-    #    slower, because constructive interference also enhances
-    #    the GOV-02 gravitational source at the midpoint.  The
-    #    extra chi-well from 4*psi_m^2 (vs 0 for opposite)
-    #    overwhelms the EM repulsion.  See PREDICTION block below.
+    #    NOTE: The centroid metric conflates a static interference
+    #    pattern (constructive pulls weight inward, destructive
+    #    pushes it outward) with dynamical attraction.  A kappa-
+    #    sweep experiment confirmed that the "same converges faster"
+    #    appearance is a measurement artifact: at kappa=0 (no gravity)
+    #    the centroids still shift.  After baseline subtraction,
+    #    opposite-phase pairs get MORE gravitational convergence,
+    #    consistent with two separate chi-wells with a steeper
+    #    inter-well gradient.  See OBSERVATION block below.
     conv_same = grav_delta_same if np.isfinite(grav_delta_same) else 0.0
     conv_opp = grav_delta_opp if np.isfinite(grav_delta_opp) else 0.0
     em_convergence_diff = conv_same - conv_opp  # > 0 means same-phase converges faster (gravity-enhanced)
@@ -731,71 +735,69 @@ def run():
     print("              and the residual correlates with the Noether current j.")
 
     # =================================================================
-    #  NOVEL PREDICTION: Interference-Gravity Enhancement
+    #  OBSERVATION: Interference Imprint on Centroid Metric
     # =================================================================
     print()
     print("=" * 72)
-    print("  NOVEL PREDICTION: Interference-Gravity Enhancement")
+    print("  OBSERVATION: Interference Imprint on Centroid Metric")
     print("=" * 72)
     print()
-    print("  THEOREM (Shared-Source Interference-Gravity Coupling):")
-    print("  --------------------------------------------------------")
+    print("  SHARED-SOURCE COUPLING (mathematical fact):")
+    print("  -----------------------------------------------------------")
     print("  In LFM, gravity and EM share a common source: |Psi_total|^2.")
-    print("  For two solitons of the same colour with relative phase dtheta,")
-    print("  at any overlap point:")
+    print("  For two solitons with relative phase dtheta, at any overlap point:")
     print()
     print("    |Psi1 + Psi2|^2 = |Psi1|^2 + |Psi2|^2 + 2*cos(dtheta)*|Psi1|*|Psi2|")
     print()
-    print("  The cross-term 2*cos(dtheta)*|Psi1|*|Psi2| simultaneously:")
-    print("    (a) Sources gravity via GOV-02:   delta_source = +/- kappa*2|Psi1||Psi2|")
-    print("    (b) Creates EM force via GOV-01:  F_EM = -grad(cross_term)")
+    print("  The cross-term simultaneously sources gravity (GOV-02)")
+    print("  and creates EM energy gradients (GOV-01).  Constructive")
+    print("  interference (same-phase) deposits 4*psi_m^2 at the midpoint;")
+    print("  destructive (opposite-phase) deposits 0.")
     print()
-    print("  At the midpoint of two identical Gaussians (each contributing psi_m):")
-    print("    Same-phase:     |Psi|^2_mid = 4 * psi_m^2      (constructive)")
-    print("    Opposite-phase: |Psi|^2_mid = 0                (destructive)")
+    print("  SELF-CORRECTION (kappa-sweep, 2026-03-10):")
+    print("  -----------------------------------------------------------")
+    print("  A parameter sweep over kappa and separation d revealed that")
+    print("  the centroid metric conflates a STATIC interference pattern")
+    print("  with dynamical gravitational attraction:")
     print()
-    print("  Gravity from (a) integrates over the full overlap volume (nonlocal).")
-    print("  EM from (b) acts through a local energy gradient.")
-    print("  When the integrated gravitational attraction exceeds the local EM")
-    print("  repulsion, LIKE-CHARGE PAIRS CONVERGE FASTER THAN OPPOSITE-CHARGE.")
+    print("    - At kappa=0 (no gravity), same-phase centroids still")
+    print("      appear to 'converge' (+0.19 cells) because constructive")
+    print("      interference pulls |Psi|^2 weight toward the midpoint,")
+    print("      shifting the centroid inward.")
+    print("    - At kappa=0, opposite-phase centroids 'diverge' (-0.60)")
+    print("      because destructive interference pushes weight outward.")
+    print("    - After subtracting this kappa=0 baseline, opposite-phase")
+    print("      pairs receive MORE gravitational convergence than same-")
+    print("      phase pairs (consistent with two separate chi-wells")
+    print("      having a steeper inter-well gradient).")
+    print()
+    print("  The original claim that 'like-charge converges faster' was")
+    print("  a centroid measurement artifact, not a gravitational effect.")
+    print("  The EM midpoint |Psi|^2 difference IS real and IS the")
+    print("  Coulomb mechanism, but it does not enhance convergence.")
     print()
 
-    # Compute the overlap amplitude
+    # Compute the overlap amplitude (still valid as EM diagnostic)
     d_pair = 10.0  # soliton pair separation
     psi_m = AMPLITUDE * np.exp(-d_pair ** 2 / (8.0 * SIGMA ** 2))
     grav_source_same = 4.0 * KAPPA * psi_m ** 2
     grav_source_opp = 0.0
-    grav_source_ratio = 4.0 * psi_m ** 2 / max(psi_m ** 2 * 2, 1e-30)  # vs 2*psi_m^2 (no interf)
 
-    print(f"  QUANTITATIVE RESULTS (A={AMPLITUDE}, sigma={SIGMA}, d={d_pair:.0f}):")
+    print(f"  QUANTITATIVE (A={AMPLITUDE}, sigma={SIGMA}, d={d_pair:.0f}):")
     print(f"    psi_m = A*exp(-d^2/8sigma^2) = {psi_m:.4f}")
-    print(f"    GOV-02 source at midpoint:")
-    print(f"      Same-phase:  kappa * 4*psi_m^2 = {grav_source_same:.6f}")
-    print(f"      Opp-phase:   kappa * 0          = {grav_source_opp:.6f}")
-    print(f"      Enhancement: {grav_source_ratio:.1f}x (same-phase gravity is {grav_source_ratio:.1f}x")
-    print(f"                   the non-interfering baseline at midpoint)")
+    print(f"    |Psi|^2 at midpoint:  same-phase = 4*psi_m^2 = {4*psi_m**2:.4f}")
+    print(f"                          opp-phase  = 0")
     print()
-    print(f"  MEASURED:")
+    print(f"  MEASURED CENTROIDS (raw, includes static interference bias):")
     print(f"    Same-phase convergence:     {conv_same:.3f} cells")
     print(f"    Opposite-phase convergence: {conv_opp:.3f} cells")
-    if conv_opp > 0:
-        measured_ratio = conv_same / conv_opp
-        print(f"    Convergence ratio (same/opp): {measured_ratio:.2f}x")
-    else:
-        measured_ratio = float("inf")
-        print(f"    Convergence ratio (same/opp): inf")
     print(f"    |Psi|^2 midpoint ratio:     {em_psi_ratio:.1f}x")
     print()
-    print("  PREDICTION:")
-    print("    Like-charge solitons at separation d ~ few*sigma converge")
-    print("    FASTER than opposite-charge solitons of equal amplitude,")
-    print("    because constructive interference enhances the GOV-02")
-    print("    gravitational source (nonlocal, integrated) more than")
-    print("    the EM repulsion (local gradient) opposes it.")
-    print()
-    print("    This has NO ANALOG in standard physics where")
-    print("    G_N/alpha_EM ~ 10^-36 makes gravitational enhancement")
-    print("    from interference unmeasurably small.")
+    print("  CONCLUSION:")
+    print("    The |Psi|^2 midpoint ratio confirms EM IS active (constructive")
+    print("    vs destructive interference changes the energy landscape).")
+    print("    The convergence difference is dominated by the static")
+    print("    interference pattern, not gravitational enhancement.")
     print()
 
     # ── Verdict ────────────────────────────────────────────────
@@ -855,17 +857,21 @@ def run():
         "weak_corr_late": round(float(weak_corr_late), 6),
         "weak_f_source_late": round(float(weak_f_late), 6),
         "verdict": verdict,
-        "prediction_interference_gravity": {
-            "description": "Like-charge solitons converge faster than opposite-charge "
-                           "due to gravitational enhancement of constructive interference",
+        "observation_interference_imprint": {
+            "description": "Centroid metric conflates static interference pattern "
+                           "with gravitational convergence. kappa-sweep confirmed "
+                           "the 'same converges faster' appearance is a measurement "
+                           "artifact: at kappa=0 centroids still shift. After baseline "
+                           "subtraction, opposite-phase gets MORE gravitational "
+                           "convergence (steeper inter-well gradient).",
             "psi_m": round(float(AMPLITUDE * np.exp(-100.0 / (8.0 * SIGMA ** 2))), 6),
-            "grav_source_midpoint_same": round(float(4.0 * KAPPA * (AMPLITUDE * np.exp(-100.0 / (8.0 * SIGMA ** 2))) ** 2), 6),
-            "grav_source_midpoint_opp": 0.0,
-            "convergence_same": round(float(conv_same), 4),
-            "convergence_opp": round(float(conv_opp), 4),
-            "convergence_ratio": round(float(conv_same / max(conv_opp, 1e-30)), 4) if conv_opp > 0 else None,
+            "psi_sq_midpoint_same": round(float(4.0 * (AMPLITUDE * np.exp(-100.0 / (8.0 * SIGMA ** 2))) ** 2), 6),
+            "psi_sq_midpoint_opp": 0.0,
+            "convergence_same_raw": round(float(conv_same), 4),
+            "convergence_opp_raw": round(float(conv_opp), 4),
             "psi_sq_midpoint_ratio": round(float(em_psi_ratio), 4) if np.isfinite(em_psi_ratio) else None,
-            "same_phase_converges_faster": bool(conv_same > conv_opp),
+            "note": "Raw convergence includes static interference bias; "
+                    "use kappa-sweep baseline subtraction for true gravity signal",
         },
     }
 

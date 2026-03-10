@@ -70,15 +70,7 @@ that would not exist without that force mechanism:
   WEAK:     j source fraction = 5.6% of GOV-02 source
 ```
 
-## Novel Prediction: Interference-Gravity Enhancement
-
-**Like-charge solitons converge faster than opposite-charge solitons.**
-
-This is counterintuitive — EM repulsion should slow same-charge convergence.
-The experiment consistently measures the opposite: same-phase pairs converge
-~50% faster (0.99 vs 0.66 cells).
-
-### Theorem (Shared-Source Interference-Gravity Coupling)
+## Observation: Shared-Source Coupling and Centroid Artifacts
 
 In LFM, gravity and EM share a common source: |Ψ\_total|².
 For two same-colour solitons with relative phase Δθ:
@@ -87,36 +79,42 @@ For two same-colour solitons with relative phase Δθ:
 |Ψ₁ + Ψ₂|² = |Ψ₁|² + |Ψ₂|² + 2·cos(Δθ)·|Ψ₁|·|Ψ₂|
 ```
 
-The cross-term `2·cos(Δθ)·|Ψ₁|·|Ψ₂|` simultaneously:
+The cross-term simultaneously sources gravity (GOV-02) and creates EM
+energy gradients (GOV-01). Constructive interference (same-phase) deposits
+`4·ψ_m²` at the midpoint; destructive (opposite-phase) deposits `0`.
 
-1. **Sources gravity** via GOV-02: `Δ(source) = ±κ·2|Ψ₁||Ψ₂|`
-2. **Creates EM force** via GOV-01: `F_EM = −∇(cross-term)`
+This |Ψ|² difference is real and **is** the Coulomb mechanism —
+interference changes the energy landscape.
 
-At the midpoint of two identical Gaussians (each contributing ψ\_m):
+### Self-Correction (κ-sweep, 2026-03-10)
 
-| Config | \|Ψ\|² at midpoint | GOV-02 grav source | EM force |
-|--------|--------------------|--------------------|----------|
-| Same-phase (Δθ=0) | 4·ψ\_m² | 4κ·ψ\_m² | Repulsive |
-| Opposite-phase (Δθ=π) | 0 | 0 | Attractive |
+An earlier version of this code claimed "like charges converge faster",
+based on raw centroid measurements (same: 0.99 cells, opp: 0.66 cells).
+A parameter sweep over κ and separation d disproved this:
 
-Gravity from (1) integrates over the full overlap volume (**nonlocal**).
-EM from (2) acts through a local energy gradient.
-When the integrated gravitational well exceeds the local EM repulsion:
+- **At κ = 0 (no gravity)**, same-phase centroids still "converge" (+0.19 cells)
+  because constructive interference pulls |Ψ|² weight toward the midpoint,
+  shifting the centroid inward.
+- **At κ = 0, opposite-phase centroids "diverge"** (−0.60 cells) because
+  destructive interference pushes weight outward.
+- After subtracting this baseline, **opposite-phase pairs get MORE
+  gravitational convergence** — consistent with two separate χ-wells
+  having a steeper inter-well gradient.
 
-**Like charges attract faster than opposite charges.**
-
-This has **no analog in standard physics** where G/α\_EM ≈ 10⁻³⁶ makes
-gravitational enhancement from interference unmeasurably small.
+The apparent convergence ratio was a **centroid measurement artifact**,
+not a gravitational enhancement. The EM midpoint |Ψ|² difference is
+genuine, but it does not accelerate convergence.
 
 ### Measured Values (A=5, σ=3, d=10)
 
 | Quantity | Value |
 |----------|-------|
 | ψ\_m = A·exp(−d²/8σ²) | 1.247 |
-| Same-phase convergence | 0.987 cells |
-| Opposite-phase convergence | 0.656 cells |
-| Convergence ratio (same/opp) | 1.50× |
+| Same-phase centroid shift (raw) | 0.987 cells |
+| Opposite-phase centroid shift (raw) | 0.656 cells |
 | \|Ψ\|² midpoint ratio | 15.4× |
+| κ=0 baseline (same) | +0.19 cells (static interference bias) |
+| κ=0 baseline (opp) | −0.60 cells (static interference bias) |
 
 ## Requirements
 
