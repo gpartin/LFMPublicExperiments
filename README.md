@@ -41,15 +41,20 @@ Where:
 
 ```
 LFMPublicExperiments/
-├── four_forces/            # ALL 4 forces from 2 equations (flagship)
-├── derivations/            # Analytical proofs (Einstein eqs, etc.)
-├── gravity/                # Kepler, precession, GW, binary mergers
-├── electromagnetism/       # Coulomb, charge dynamics
-├── nuclear_physics/        # QGP, confinement, parity
-├── quantum_mechanics/      # Particle in box, tunneling
-├── classical_mechanics/    # Projectile motion, orbits
-├── cosmology/              # Dark energy, horizons
-├── LFM_EQUATIONS.md        # Complete equation reference
+├── notebooks/                  # Colab notebooks (interactive tutorials)
+├── classical_mechanics/        # Projectile motion, orbits
+├── quantum_mechanics/          # Particle in box, tunneling
+├── gravity/                    # Kepler, precession, binary mergers
+│   ├── gravitational_waves/    #   Binary merger, NS merger, QNM ringdown
+│   ├── relativistic_effects/   #   Time dilation, frame dragging, SEP
+│   └── rotation_curves/        #   175 SPARC galaxy fits
+├── electromagnetism/           # Coulomb, charge dynamics
+├── four_forces/                # All 4 forces from GOV-01/02
+├── nuclear_physics/            # QGP, confinement
+│   └── qgp_phase/             #   Phase transition experiments
+├── cosmology/                  # Dark energy, horizons, cosmic web
+├── tools/                      # Verification & test utilities
+├── LFM_EQUATIONS.md            # Equation reference & experiment rules
 └── README.md
 ```
 
@@ -113,9 +118,4 @@ From this single integer:
 
 ## License
 
-`LFMPublicExperiments` is licensed under **Unlicense OR MIT** (your choice).
-
-- **Unlicense**: public-domain dedication for maximum freedom
-- **MIT**: permissive fallback for jurisdictions/workflows that prefer explicit license grant
-
-See [LICENSE](LICENSE) for full terms.
+MIT License — see [LICENSE](LICENSE)

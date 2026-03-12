@@ -2,98 +2,21 @@
 __pycache__/
 *.py[cod]
 *$py.class
-.venv/
-venv/
 *.egg-info/
+dist/
+build/
 
-# WaveGuard product (separate repo)
-waveguard/
+# Testing
+.pytest_cache/
 
-# LaTeX auxiliary files (regenerated on build)
-*.aux
-*.bbl
-*.blg
-*.fdb_latexmk
-*.fls
-*.out
-*.synctex.gz
-*.toc
-*.lof
-*.lot
-
-# Keep log files for debugging (NOT ignored)
-# *.log  <- intentionally NOT ignored
-
-# IDE
-.idea/
+# IDEs
 .vscode/
+.idea/
 *.swp
-*.swo
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Temporary files
-temp_*.md
-*.tmp
-
-# Large simulation data files (regenerable)
-*.npz
-*.npy
-*.gif
-*.pkl
-checkpoints/
-*/checkpoints/
-*/*/checkpoints/
-results/
-*/results/
-*/*/results/
-
-# Local clone/publish directories (embedded git repos)
-_publish/
-_repos/
-
-# Generated figures (610 MB, keep local only)
-images/
-
-# Separate git repos (not submodules)
-LFM/
-WaveGuardClient/
-x402_fork/
-x402-fork/
-CryptoGuardClient/
-cryptoguard/
-awesome-mcp-servers/
-.gitmodules
-
-# LaTeX auto-generated note bibliographies
-*Notes.bib
-pdebench_repo/
-neuraloperator_repo/
-deepxde_repo/
-lfm-gravity-dark-matter-assessment/
-LFMPublicExperiments/
-LFMPublicExperiments_standalone/
-lensingexperiment/
-LFMPhase1/
-periodictable/
-periodictable_proper/
-
-# PDEBench data files (regenerable, ~8 GB)
-paper_experiments/pdebench_wave/data/
-paper_experiments/pdebench_wave/ml_results/*.pt
-*.hdf5
-
-# Large PDFs in External/
-External/*.pdf
-
-# Primordial soup result data (regenerable)
-paper_experiments/primordial_soup/results_*/
-
-# ML model weights (regenerable)
-*.pt
-
-# Pipeline progress files (temporary)
-paper_experiments/pdebench_wave/pipeline_progress.txt
-paper_experiments/pdebench_wave/resume_progress.txt
+# Generated outputs (re-run scripts to regenerate)
+*_results/

@@ -1,2 +1,10 @@
-﻿# Requirements for LFM Four-Force Emergence Test
+﻿# Core dependencies (all experiments)
 numpy>=1.20
+scipy>=1.7
+matplotlib>=3.5
+
+# Optional (tools/ only)
+# sympy>=1.10  — needed by tools/lfm_em_derivation_verification.py
+# pytest>=7.0  — needed by tools/test_lfm_em_regression.py
+# pandas>=1.4  — needed by cosmology/lfm_cosmic_web_REAL_DATA.py
+# h5py>=3.0    — needed by cosmology/cosmic_web_data_access.py

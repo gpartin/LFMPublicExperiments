@@ -35,7 +35,7 @@ C = 3e5  # km/s
 H0 = 70  # km/s/Mpc
 
 # Data directory (created by previous script)
-DATA_DIR = Path("c:/Papers/paper_experiments/cosmic_web_real_data")
+DATA_DIR = Path("cosmic_web_real_data")
 OUTPUT_DIR = DATA_DIR
 
 # =============================================================================

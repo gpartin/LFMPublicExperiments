@@ -60,7 +60,7 @@ class Config:
     n_grid = 128  # Grid resolution
     
     # Output
-    output_dir = Path("c:/Papers/paper_experiments/filament_results")
+    output_dir = Path("filament_results")
 
 config = Config()
 config.output_dir.mkdir(exist_ok=True)
