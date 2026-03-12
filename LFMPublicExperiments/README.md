@@ -53,13 +53,25 @@ No parameter is adjusted per galaxy. All are either derived from the lattice str
 
 ## Repository Contents
 
-```
-notebooks/
-  LFM_SPARC_Galaxy_Rotation_Curves.ipynb   # Main Colab notebook (click badge above)
-gravity/                                    # χ-memory gravitational well experiments
-electromagnetism/                           # Phase interference experiments
-four_forces/                                # Unified four-force emergence
-```
+### Notebook Suite
+
+All notebooks run in Google Colab with zero setup (click badge → Run All):
+
+| # | Notebook | What It Shows | Key Result |
+|---|----------|---------------|------------|
+| 1 | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/gpartin/LFMPublicExperiments/blob/main/LFMPublicExperiments/notebooks/LFM_Foundation_1D_Start_Here.ipynb) **Foundation** | Energy density creates χ-wells (gravity) | χ-well depth = 7.25 |
+| 2 | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/gpartin/LFMPublicExperiments/blob/main/LFMPublicExperiments/notebooks/LFM_Coulomb_Law_From_Waves.ipynb) **Coulomb's Law** | Field intensity ∝ 1/r², force ∝ 1/r³ | Slopes: −2.000, −3.001 |
+| 3 | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/gpartin/LFMPublicExperiments/blob/main/LFMPublicExperiments/notebooks/LFM_Quantum_Energy_Levels.ipynb) **Quantum Levels** | Quantized modes in a χ-well | 6 modes match $\omega_n^2 = (n\pi c/L)^2 + \chi^2$ |
+| 4 | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/gpartin/LFMPublicExperiments/blob/main/LFMPublicExperiments/notebooks/LFM_Dark_Matter_Chi_Memory.ipynb) **Dark Matter** | χ-well persists after mass removed | Memory = "dark matter halo" |
+| 5 | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/gpartin/LFMPublicExperiments/blob/main/LFMPublicExperiments/notebooks/LFM_Gravitational_Time_Dilation.ipynb) **Time Dilation** | Waves oscillate slower in χ-wells | Frequency ratio = 0.84 |
+| 6 | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/gpartin/LFMPublicExperiments/blob/main/LFMPublicExperiments/notebooks/LFM_Cosmic_Expansion.ipynb) **Cosmic Expansion** | Wavelength stretches in χ gradient | Redshift z ≈ 1.08 confirmed |
+| 7 | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/gpartin/LFMPublicExperiments/blob/main/LFMPublicExperiments/notebooks/LFM_Frame_Dragging.ipynb) **Frame Dragging** | Rotating mass drags nearby waves | Angular momentum transferred |
+| 8 | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/gpartin/LFMPublicExperiments/blob/main/LFMPublicExperiments/notebooks/LFM_Binary_Black_Hole_Merger.ipynb) **Binary Merger** | χ-gradient inspiral → merger | Separation: 40 → 3.3 |
+| 9 | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/gpartin/LFMPublicExperiments/blob/main/LFMPublicExperiments/notebooks/LFM_Four_Forces_Emergence.ipynb) **Four Forces** | All four forces from GOV-01 + GOV-02 | Gravity ✓ EM ✓ Strong ✓ Weak ✓ |
+| 10 | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/gpartin/LFMPublicExperiments/blob/main/LFMPublicExperiments/notebooks/LFM_Charge_From_Phase.ipynb) **Charge from Phase** | Phase determines attraction/repulsion | 64.6% energy difference |
+| 11 | [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/gpartin/LFMPublicExperiments/blob/main/LFMPublicExperiments/notebooks/LFM_SPARC_Galaxy_Rotation_Curves.ipynb) **SPARC Galaxies** | 175 rotation curves, zero free parameters | LFM 16.2% vs MOND 18.2% |
+
+Every notebook uses only `numpy` and `matplotlib` — no custom libraries, no GPU required.
 
 ## How to Reproduce
 
