@@ -22,7 +22,7 @@ Where:
 - **E** = Wave amplitude/energy field
 - **χ** = Local "mass" parameter (creates curvature)
 - **χ₀ = 19** = Background χ (fundamental constant)
-- **κ = 0.016** = Coupling constant
+- **κ = 1/63** = Coupling constant (derived from lattice geometry)
 
 ## What Emerges
 
@@ -98,11 +98,11 @@ Examples:
 
 From this single integer:
 - Fine structure constant α = (χ₀-8)/(480π) → 1/137.088 (0.04% error)
-- Proton/electron mass ratio = 5χ₀² + 2χ₀ - 7 = 1836 (0.008% error)
+- Proton/electron mass ratio = (χ₀-8)³ + χ₀² + (χ₀-7)² = 1836 (0.008% error)
 - Strong coupling α_s = 2/(χ₀-2) = 0.1176 (0.25% error)
 - Number of gluons = χ₀ - 11 = 8 (EXACT)
 - Fermion generations = (χ₀-1)/6 = 3 (EXACT)
-- Dark energy fraction Ω_Λ = (χ₀-6)/χ₀ = 0.684 (0.12% error)
+- Dark energy fraction Ω_Λ = (χ₀-2D)/χ₀ = 13/19 = 0.6842 (0.12% error)
 
 ## Citation
 
