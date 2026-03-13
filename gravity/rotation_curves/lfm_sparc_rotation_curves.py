@@ -23,10 +23,19 @@ ALTERNATIVE HYPOTHESIS (H1):
     The LFM-RAR formula fits SPARC rotation curves with <15% RMS error.
 
 LFM-ONLY VERIFICATION:
-    [X] a_0 = c*H_0/(2*pi) derived from cosmological chi evolution
-    [X] Formula from chi well structure: g = c^2 * (1/chi) * (d_chi/dr)
+    [X] a_0 = c*H_0/(2*pi) derived from GOV-03 chi-memory timescale
+    [X] Formula from GOV-01 product structure: g_obs = g_bar * (chi_0/chi)
+    [X] Interpolation from uniqueness of simplest rational form (THEOREM)
     [X] NO empirical MOND interpolating function used
     [X] NO dark matter halo profiles assumed
+
+    DERIVATION CHAIN (6 steps — see LFM_RAR_DERIVATION.md):
+    Step 1 [THEOREM]: GOV-04 (quasi-static GOV-02) = Newtonian Poisson equation
+    Step 2 [THEOREM]: g_obs = g_bar * (chi_0/chi) from GOV-01 dispersion metric  
+    Step 3 [THEOREM]: a_0 = c*H_0/(2*pi) from GOV-03 chi-memory timescale
+    Step 4 [THEOREM]: g_bar >> a_0 → g_obs → g_bar (Newtonian limit)
+    Step 5 [PROPOSITION]: g_bar << a_0 → g_obs → sqrt(g_bar * a_0) (deep-field)
+    Step 6 [THEOREM]: f(x) = 1 + 1/x is unique simplest rational interpolation
 
 DATA SOURCE:
     SPARC Database - http://astroweb.case.edu/SPARC/
@@ -48,16 +57,16 @@ print("g_obs = sqrt(g_bar^2 + g_bar * a_0)")
 print("where a_0 = c * H_0 / (2*pi)")
 print("=" * 70)
 
-# LFM prediction for a_0
+# LFM prediction for a_0 (DERIVED from cosmological constants, zero free parameters)
 c = 3e8  # m/s
-H0 = 70e3 / 3.086e22  # s^-1
+H0 = 67.4e3 / 3.086e22  # s^-1 (Planck 2018)
 a_0_lfm = c * H0 / (2 * np.pi)
-print(f"\na_0 (LFM) = c*H_0/(2*pi) = {a_0_lfm:.3e} m/s^2")
+print(f"\na_0 (LFM-derived) = c*H_0/(2*pi) = {a_0_lfm:.3e} m/s^2")
+print(f"a_0 (McGaugh observed) = 1.200e-10 m/s^2")
+print(f"Ratio LFM/observed: {a_0_lfm/1.2e-10:.3f}")
 
-# Use observed value for fit (within 10% of LFM prediction)
-a_0 = 1.2e-10  # m/s^2 (observed g-dagger)
-print(f"a_0 (used) = {a_0:.3e} m/s^2")
-print(f"Ratio LFM/observed: {a_0_lfm/a_0:.3f}")
+# Use LFM-derived value (Step 3 of derivation chain)
+a_0 = a_0_lfm
 
 # SPARC DATA for 5 galaxies
 # Each galaxy: name, radii (kpc), v_obs (km/s), v_bar (km/s)

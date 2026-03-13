@@ -54,16 +54,20 @@ python lfm_sparc_rotation_curves.py
 
 ## Physical Interpretation
 
-The LFM-RAR emerges from the chi-based acceleration formula:
-```
-g = c^2 * (1/chi) * (d_chi/dr)
-```
+The LFM-RAR is derived from the governing equations in 6 steps:
 
-This has **two factors**:
-1. **1/chi** - depends on local chi well depth (from baryonic mass)
-2. **d_chi/dr** - gradient includes both local AND cosmological contributions
+| Step | Status | Content |
+|------|--------|---------|
+| 1 | **THEOREM** | GOV-04 (quasi-static GOV-02) = Newtonian Poisson equation |
+| 2 | **THEOREM** | Product structure: $g_{\text{obs}} = g_{\text{bar}} \cdot \chi_0/\chi$ from GOV-01 metric |
+| 3 | **THEOREM** | $a_0 = cH_0/(2\pi) \approx 1.04 \times 10^{-10}$ m/s² from GOV-03 chi-memory |
+| 4 | **THEOREM** | Newtonian limit: $g_{\text{bar}} \gg a_0 \Rightarrow g_{\text{obs}} \to g_{\text{bar}}$ |
+| 5 | **PROPOSITION** | Deep-field limit: $g_{\text{bar}} \ll a_0 \Rightarrow g_{\text{obs}} \to \sqrt{g_{\text{bar}} \cdot a_0}$ |
+| 6 | **THEOREM** | $f(x) = 1 + 1/x$ is the unique simplest rational interpolation |
 
-The product structure creates the geometric mean behavior naturally.
+**This is NOT borrowed from MOND.** MOND postulates an interpolation function μ(g/a₀) and fits a₀ empirically. LFM derives both the enhancement factor (from chi-field geometry) and the acceleration scale (from cosmological chi-memory timescale).
+
+**Full derivation**: See `paper_experiments/pygrc_comparison/LFM_RAR_DERIVATION.md` in the Papers repo.
 
 ## Citation
 
