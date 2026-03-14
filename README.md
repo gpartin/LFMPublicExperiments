@@ -36,6 +36,7 @@ Where:
 | **Quantum Mechanics** | Wave boundary conditions | `quantum_mechanics/` |
 | **Classical Mechanics** | Wave packet dynamics | `classical_mechanics/` |
 | **Cosmology** | Large-scale χ evolution | `cosmology/` |
+| **Higgs Physics** | Self-coupling from lattice geometry | `higgs_physics/` |
 
 ## Repository Structure
 
@@ -53,6 +54,7 @@ LFMPublicExperiments/
 ├── nuclear_physics/            # QGP, confinement
 │   └── qgp_phase/             #   Phase transition experiments
 ├── cosmology/                  # Dark energy, horizons, cosmic web
+├── higgs_physics/              # Self-coupling λ=4/31 from geometry
 ├── tools/                      # Verification & test utilities
 ├── LFM_EQUATIONS.md            # Equation reference & experiment rules
 └── README.md

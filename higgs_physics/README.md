@@ -1,6 +1,6 @@
-# Paper 075: Higgs Self-Coupling λ = 4/31 from Lattice Geometry
+# Higgs Self-Coupling from Lattice Geometry
 
-**Prediction**: The Higgs boson self-coupling constant λ = 4/31 ≈ 0.129032, derived purely from the coordination shell structure of a discrete spacetime lattice.
+**Prediction**: λ = 4/31 ≈ 0.129032 — the Higgs boson self-coupling derived purely from coordination shell geometry of a discrete spacetime lattice.
 
 **Key formula**: λ = D_st / (2·D_st² − 1), where D_st is the number of spacetime dimensions.
 For D_st = 4: λ = 4/31 ≈ 0.129032 (SM measured: 0.1291 ± 0.05, error 0.27%).
@@ -9,7 +9,7 @@ For D_st = 4: λ = 4/31 ≈ 0.129032 (SM measured: 0.1291 ± 0.05, error 0.27%).
 
 | Script | What it does | Requirements |
 |--------|-------------|--------------|
-| `reproduce_paper75.py` | **START HERE.** Reproduces every algebraic claim in the paper. | NumPy only |
+| `reproduce_lambda_derivation.py` | **START HERE.** Reproduces every algebraic claim. | NumPy only |
 | `verify_lambda.py` | High-precision verification using Python `Decimal` (100-digit). | Standard library |
 | `mexican_hat_gov02_experiment.py` | Tests the Mexican hat V(χ) = λ(χ²−χ₀²)² in GOV-02 dynamics. | NumPy |
 | `test_z2_universality.py` | Verifies λ = D_st/(2D_st²−1) holds for D_st = 2, 3, 4, 5. | NumPy |
@@ -20,7 +20,7 @@ For D_st = 4: λ = 4/31 ≈ 0.129032 (SM measured: 0.1291 ± 0.05, error 0.27%).
 
 ```bash
 # Verify all claims (< 1 second, no GPU needed)
-python reproduce_paper75.py
+python reproduce_lambda_derivation.py
 
 # High-precision check
 python verify_lambda.py
