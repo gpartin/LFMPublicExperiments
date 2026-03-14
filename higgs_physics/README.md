@@ -5,6 +5,15 @@
 **Key formula**: λ = D_st / (2·D_st² − 1), where D_st is the number of spacetime dimensions.
 For D_st = 4: λ = 4/31 ≈ 0.129032 (SM measured: 0.1291 ± 0.05, error 0.27%).
 
+## Paper
+
+The full manuscript is included in this folder:
+
+- **[paper_075_contest_submission.pdf](paper_075_contest_submission.pdf)** — 17-page paper with derivation, figures, validation, and falsification criteria
+- `paper_075_contest_submission.tex` — LaTeX source
+- `generate_figures.py` — Generates all three paper figures from scratch
+- `fig_*.pdf` — Pre-built figures (coordination shells, derivation chain, Mexican hat potential)
+
 ## Scripts
 
 | Script | What it does | Requirements |
