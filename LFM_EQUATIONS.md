@@ -1,24 +1,26 @@
-# LFM Governing Equations Reference (v14.3)
+# LFM Governing Equations Reference (v22.0 — Lattice-First)
+
+## Three Axioms
+
+1. **AXIOM 1**: Simple cubic lattice (D dimensions, spacing Δx, two fields: Ψ ∈ ℂ, χ ∈ ℝ)
+2. **AXIOM 2**: Discrete wave update rule (leapfrog with 19-point stencil) — GOV-01 + GOV-02
+3. **AXIOM 3**: Unit coupling (natural lattice units: Δx = c = ℏ = 1)
+
+**D = 3 is DERIVED** via the Stencil-Vacuum Uniqueness Theorem: the condition 1+2D² = 3^D−2^D has a unique positive integer solution D = 3.
 
 ## The Fundamental Equations
 
 All physics in LFM emerges from the coupled wave equations. The framework uses a **hierarchy of field representations** depending on what physics is being modeled.
 
-### GOV-01-S: Spinor Wave Equation (Most General - Fermions)
-
-```
-(iγᵘ∂ᵤ − χ(𝐱,t))ψ = 0
-```
-
-Where ψ ∈ ℂ⁴ is a 4-component Dirac spinor. This IS the Dirac equation with spacetime-dependent mass χ.
-
-### GOV-01-K: Klein-Gordon Wave Equation (Squared Limit - Bosons)
+### GOV-01: Lattice Wave Equation (FUNDAMENTAL)
 
 ```
 ∂²Ψₐ/∂t² = c²∇²Ψₐ − χ²Ψₐ
 ```
 
 Where Ψₐ ∈ ℂ, a = 1,2,3 (color components). Reduces to real E for gravity-only (Level 0).
+
+This IS the native lattice update rule (2nd-order in time). The Klein-Gordon equation is its continuum limit (Δx → 0). The Dirac equation EMERGES from Lorentz symmetry of GOV-01 solutions (it is a mathematical factorization, not a separate governing equation).
 
 **Discrete leapfrog form:**
 ```
@@ -65,10 +67,12 @@ chi_next = 2*chi - chi_prev + dt² * (
 
 ## Parameters (ALL DERIVED FROM χ₀ = 19)
 
-### GEO-01: χ₀ = 19 IS DERIVED
+### GEO-01: χ₀ = 19 IS DERIVED (from D = 3, which is also DERIVED)
 
 **GEO-01 (Master Formula)**:
-$$\boxed{\chi_0 = 3^D - 2^D = 27 - 8 = 19}$$
+$$\boxed{\chi_0(D) = 3^D - 2^D}$$
+
+**Stencil-Vacuum Uniqueness Theorem (A.6):** The consistency condition 1+2D² = 3^D−2^D has a unique positive integer solution **D = 3**. Proof: the RHS grows exponentially while the LHS grows quadratically; for D ≥ 4 the RHS dominates; direct check confirms only D = 3 satisfies it (1+18 = 27−8 = 19). Therefore χ₀ = 3³ − 2³ = **19**.
 
 χ₀ = 19 emerges from the eigenvalue structure of the 3D discrete Laplacian (see LFM-PAPER-045 THEOREM B.3).
 
@@ -142,6 +146,10 @@ All experiments in this repository MUST:
 Physics must EMERGE from the equations, not be inserted.
 
 ## Extensions (for specific phenomena)
+
+### Emergent Spin-1/2 (Dirac from GOV-01 via Lorentz Symmetry)
+
+The lattice update rule is 2nd-order in time (Klein-Gordon). The Dirac equation is a 1st-order factorization that EMERGES in the continuum limit via Lorentz symmetry. Spin-1/2, Pauli exclusion, and fermionic physics are **output** of the lattice dynamics, not input. See LFM-PAPER-048.
 
 ### Complex Wave Field (Electromagnetism)
 ```
